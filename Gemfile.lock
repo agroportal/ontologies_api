@@ -57,7 +57,7 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ontologies_linked_data.git
-  revision: 5e6bc037374784b713d3c64b053f6044d473e46d
+  revision: f065870618a38c470df9287e3bb5e6696dbe260d
   branch: development
   specs:
     ontologies_linked_data (0.0.1)
@@ -103,7 +103,7 @@ GIT
 
 GIT
   remote: https://github.com/sinatra/sinatra.git
-  revision: f891dd2b6f4911e356600efe6c3b82af97d262c6
+  revision: 5236d3459b8b9015e5ce21ddd0c6beb0db4081d4
   specs:
     rack-protection (4.2.1)
       base64 (>= 0.1.0)
@@ -140,7 +140,7 @@ GEM
       minitest (>= 5.1, < 6)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
-    addressable (2.8.9)
+    addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
     airbrussh (1.6.1)
       sshkit (>= 1.6.1, != 1.7.0)
@@ -153,7 +153,7 @@ GEM
     bcrypt_pbkdf (1.1.2-arm64-darwin)
     bcrypt_pbkdf (1.1.2-x86_64-darwin)
     benchmark (0.5.0)
-    bigdecimal (4.1.0)
+    bigdecimal (4.1.2)
     builder (3.3.0)
     capistrano (3.20.0)
       airbrussh (>= 1.0.0)
@@ -267,12 +267,12 @@ GEM
     hashdiff (1.2.1)
     htmlentities (4.4.2)
     http-accept (1.7.0)
-    http-cookie (1.1.0)
+    http-cookie (1.1.6)
       domain_name (~> 0.5)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     io-console (0.8.2)
-    json (2.19.3)
+    json (2.19.5)
     json-canonicalization (0.4.0)
     json-ld (3.2.5)
       htmlentities (~> 4.3)
@@ -288,7 +288,7 @@ GEM
       base64
     kgio (2.11.4)
     language_server-protocol (3.17.0.5)
-    libxml-ruby (5.0.5)
+    libxml-ruby (5.0.6)
     link_header (0.0.8)
     lint_roller (1.1.0)
     logger (1.7.0)
@@ -304,24 +304,23 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0317)
+    mime-types-data (3.2026.0414)
     mini_mime (1.1.5)
     minitest (5.27.0)
     minitest-fail-fast (0.2.0)
       minitest (>= 5.0, < 7)
-    minitest-hooks (1.5.3)
+    minitest-hooks (1.5.4)
       minitest (> 5.3)
-    minitest-reporters (1.7.1)
+    minitest-reporters (1.8.0)
       ansi
       builder
-      minitest (>= 5.0)
+      minitest (>= 5.0, < 7)
       ruby-progressbar
     minitest-stub_any_instance (1.0.3)
     mlanett-redis-lock (0.2.7)
       redis
     multi_json (1.19.1)
-    mustermann (3.0.4)
-      ruby2_keywords (~> 0.0.1)
+    mustermann (3.1.1)
     net-ftp (0.3.9)
       net-protocol
       time
@@ -329,7 +328,7 @@ GEM
       uri (>= 0.11.1)
     net-http-persistent (4.0.8)
       connection_pool (>= 2.2.4, < 4)
-    net-imap (0.5.13)
+    net-imap (0.5.14)
       date
       net-protocol
     net-pop (0.1.2)
@@ -344,7 +343,7 @@ GEM
       net-protocol
     net-ssh (7.3.2)
     netrc (0.11.0)
-    oj (3.16.16)
+    oj (3.17.0)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     omni_logger (0.1.4)
@@ -352,7 +351,7 @@ GEM
     os (1.1.4)
     ostruct (0.6.3)
     pandoc-ruby (2.1.10)
-    parallel (1.27.0)
+    parallel (1.28.0)
     parseconfig (1.1.2)
     parser (3.3.11.1)
       ast (~> 2.4.1)
@@ -367,7 +366,7 @@ GEM
     public_suffix (6.0.2)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.2.5)
+    rack (3.2.6)
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-attack (6.8.0)
@@ -381,7 +380,7 @@ GEM
       rack (>= 3.0.14)
     rack-mini-profiler (4.0.1)
       rack (>= 1.2.0)
-    rack-session (2.1.1)
+    rack-session (2.1.2)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
     rack-test (2.2.0)
@@ -391,7 +390,7 @@ GEM
       rack (>= 3)
     rainbow (3.1.1)
     raindrops (0.20.1)
-    rake (13.3.1)
+    rake (13.4.2)
     rdf (3.3.1)
       bcp47_spec (~> 0.2)
       link_header (~> 0.0, >= 0.0.8)
@@ -414,7 +413,7 @@ GEM
       redis-store (>= 1.6, < 2)
     redis-store (1.11.0)
       redis (>= 4, < 6)
-    regexp_parser (2.11.3)
+    regexp_parser (2.12.0)
     reline (0.6.3)
       io-console (~> 0.5)
     representable (3.2.0)
@@ -433,11 +432,11 @@ GEM
     rsolr (2.6.0)
       builder (>= 2.1.2)
       faraday (>= 0.9, < 3, != 2.0.0)
-    rubocop (1.86.0)
+    rubocop (1.86.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
-      parallel (~> 1.10)
+      parallel (>= 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
@@ -449,8 +448,7 @@ GEM
       prism (~> 1.7)
     ruby-progressbar (1.13.0)
     ruby-xxHash (0.4.0.2)
-    ruby2_keywords (0.0.5)
-    rubyzip (3.2.2)
+    rubyzip (3.3.0)
     rufus-scheduler (3.9.2)
       fugit (~> 1.1, >= 1.11.1)
     securerandom (0.4.1)
