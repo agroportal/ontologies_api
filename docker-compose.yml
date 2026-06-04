@@ -128,7 +128,7 @@ services:
       retries: 3
 
   agraph-ut:
-    image: franzinc/agraph:v8.1.0
+    image: franzinc/agraph:v8.1.1
     platform: linux/amd64
     environment:
       - AGRAPH_SUPER_USER=test
