@@ -182,7 +182,7 @@ class OntologiesController < ApplicationController
         ont = instance_from_params(Ontology, params)
       else
         error_msg = <<-ERR
-        Ontology already exists, see #{ont.id}
+        Ontology already exists, see #{LinkedData::Models::Base.replace_url_id_to_prefix(ont.id)}
         To add a new submission, POST to: /ontologies/#{params['acronym']}/submission.
         To modify the resource, use PATCH.
         ERR
