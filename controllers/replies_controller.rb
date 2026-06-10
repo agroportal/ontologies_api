@@ -78,8 +78,35 @@ class RepliesController < ApplicationController
     # Delete a reply
     delete '/:replyid' do
       _reply = LinkedData::Models::Notes::Reply.find(params["replyid"]).first
-      _reply.delete
+      error 404, "Reply #{params["replyid"]} not found" if _reply.nil?
+      remove_reply(_reply)
       halt 204
+    end
+
+    # Detach the reply from any note that references it and recursively delete
+    # its child replies before deleting the reply itself, so that no dangling
+    # reference to the deleted reply is left behind.
+    def remove_reply(reply)
+      notes_referencing(reply).each do |note|
+        note.reply = note.reply.reject { |r| r.id == reply.id }
+        note.save
+      end
+
+      reply.bring(:children) unless reply.loaded_attributes.include?(:children)
+      reply.children.each { |child| remove_reply(child) }
+
+      reply.delete
+    end
+    
+    def notes_referencing(reply)
+      reply_predicate = LinkedData::Models::Note.attribute_uri(:reply)
+      Goo.sparql_query_client
+         .select(:id).distinct
+         .from(LinkedData::Models::Note.uri_type)
+         .where([:id, reply_predicate, reply.id])
+         .each_solution
+         .map { |sol| LinkedData::Models::Note.find(sol[:id]).include(LinkedData::Models::Note.attributes).first }
+         .compact
     end
   end
 end
