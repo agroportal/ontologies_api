@@ -35,16 +35,15 @@ class TestAccessControlHelper < TestCaseHelpers
     @@ont.bring_remaining
     @@user = @@ont.administeredBy.first
     @@user.bring_remaining
-    @@old_security_setting = LinkedData.settings.enable_security
 
     @@ont_patch = onts.shift.bring_remaining
 
+    # enable_security is restored by the per-suite snapshot net (see AppUnit).
     LinkedData.settings.enable_security = true
   end
 
   def after_suite
     self.backend_4s_delete
-    LinkedData.settings.enable_security = @@old_security_setting unless @@old_security_setting.nil?
   end
 
   def test_filtered_list

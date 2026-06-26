@@ -107,26 +107,25 @@ class TestSearchModelsController < TestCase
     bro.viewingRestriction = "private"
     bro.save
 
-    self.class.enable_security
-    get "/search/ontologies?query=#{bro.acronym}&apikey=#{blocked_user.apikey}"
-    response = MultiJson.load(last_response.body)["collection"]
-    assert_empty response.select{|x| x["ontology_acronym_text"].eql?(bro.acronym)}
+    with_settings(enable_security: true) do
+      get "/search/ontologies?query=#{bro.acronym}&apikey=#{blocked_user.apikey}"
+      response = MultiJson.load(last_response.body)["collection"]
+      assert_empty response.select{|x| x["ontology_acronym_text"].eql?(bro.acronym)}
 
-    get "/search/ontologies/content?q=*Research_Lab_Management*&apikey=#{blocked_user.apikey}"
-    assert last_response.ok?
-    res = MultiJson.load(last_response.body)
-    assert_equal 0, res['totalCount']
+      get "/search/ontologies/content?q=*Research_Lab_Management*&apikey=#{blocked_user.apikey}"
+      assert last_response.ok?
+      res = MultiJson.load(last_response.body)
+      assert_equal 0, res['totalCount']
 
-    get "/search/ontologies?query=#{bro.acronym}&apikey=#{allowed_user.apikey}"
-    response = MultiJson.load(last_response.body)["collection"]
-    refute_empty response.select{|x| x["ontology_acronym_text"].eql?(bro.acronym)}
+      get "/search/ontologies?query=#{bro.acronym}&apikey=#{allowed_user.apikey}"
+      response = MultiJson.load(last_response.body)["collection"]
+      refute_empty response.select{|x| x["ontology_acronym_text"].eql?(bro.acronym)}
 
-    get "/search/ontologies/content?q=*Research_Lab_Management*&apikey=#{allowed_user.apikey}"
-    assert last_response.ok?
-    res = MultiJson.load(last_response.body)
-    assert_equal 1, res['totalCount']
-
-    self.class.reset_security(false)
+      get "/search/ontologies/content?q=*Research_Lab_Management*&apikey=#{allowed_user.apikey}"
+      assert last_response.ok?
+      res = MultiJson.load(last_response.body)
+      assert_equal 1, res['totalCount']
+    end
   end
 
   def test_ontology_metadata_search
