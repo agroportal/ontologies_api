@@ -81,8 +81,7 @@ class OntologySubmissionsController < ApplicationController
       if submission.valid?
         submission.save
         if (params.keys & REQUIRES_REPROCESS).length > 0 || request_has_file?
-          cron = NcboCron::Models::OntologySubmissionParser.new
-          cron.queue_submission(submission, {all: true})
+          SubmissionProcessWorker.enqueue(submission)
         end
       else
         error 422, submission.errors

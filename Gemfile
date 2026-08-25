@@ -38,6 +38,9 @@ gem 'redis-rack-cache'
 gem 'redis'
 gem 'redis-store'
 
+# Background jobs
+gem 'sidekiq', '~> 7.3' # Sidekiq 8 requires Ruby >= 3.2
+
 # Monitoring
 gem "sentry-ruby", "~> 5.24"
 

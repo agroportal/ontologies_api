@@ -18,6 +18,10 @@ Commands:
               $0 dev  --sparql-client-path SPARQL_CLIENT_PATH
               $0 dev  --ncbo-path NCBO_PATH
 
+  sidekiq   Start the Sidekiq background job worker (same options as dev).
+            Example:
+              $0 sidekiq --linked-data-path ONTOLOGIES_LINKED_DATA_PATH
+
   test      Run tests (all or a specific file).
             Examples:
               $0 test all
@@ -95,7 +99,8 @@ build_docker_run_cmd() {
   local sparql_client_path="$4"
   local ncbo_path="$5"
 
-  local docker_run_cmd="docker compose --profile vo -p ontoportal_docker run --rm -it --name api-service"
+  local container_name="${ONTOPORTAL_CONTAINER_NAME:-api-service}"
+  local docker_run_cmd="docker compose --profile vo -p ontoportal_docker run --rm -it --name $container_name"
   local bash_cmd=""
 
   # Conditionally add bind mounts only if the paths are not empty
@@ -114,7 +119,10 @@ build_docker_run_cmd() {
   done
 
   bash_cmd+=" (bundle check || bundle install || bundle update) && $custom_command"
-  docker_run_cmd+=" --service-ports api bash -c \"$bash_cmd\""
+  if [ "${ONTOPORTAL_SERVICE_PORTS:-yes}" = "yes" ]; then
+    docker_run_cmd+=" --service-ports"
+  fi
+  docker_run_cmd+=" api bash -c \"$bash_cmd\""
 
   echo "[+] Run docker command $docker_run_cmd"
   eval "$docker_run_cmd"
@@ -302,6 +310,17 @@ dev() {
 }
 
 
+# Function to handle the "sidekiq" option: run the background job worker with
+# the same local gem overrides as "dev" (see docker-compose.yml for the plain
+# image-based service used automatically by "docker compose up").
+sidekiq() {
+  echo "[+] Starting Sidekiq worker..."
+  local custom_command="bundle exec sidekiq -e development -r ./config/sidekiq_boot.rb -C config/sidekiq.yml"
+  ONTOPORTAL_CONTAINER_NAME="sidekiq-service"
+  ONTOPORTAL_SERVICE_PORTS="no"
+  run_command "$custom_command" "$@"
+}
+
 # Function to handle the "test" option
 test() {
   echo "[+] Running tests..."
@@ -359,6 +378,9 @@ case "$1" in
     ;;
   "dev")
     dev "${@:2}"
+    ;;
+  "sidekiq")
+    sidekiq "${@:2}"
     ;;
   "test")
     test "${@:2}"

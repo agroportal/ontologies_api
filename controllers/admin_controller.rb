@@ -69,7 +69,7 @@ class AdminController < ApplicationController
       error 404, "Ontology #{params["acronym"]} contains no submissions" if latest.nil?
       check_last_modified(latest)
       latest.bring(*submission_include_params)
-      NcboCron::Models::OntologySubmissionParser.new.queue_submission(latest, actions)
+      SubmissionProcessWorker.enqueue(latest, actions)
       halt 204
     end
 

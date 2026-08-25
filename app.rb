@@ -81,6 +81,9 @@ end
 
 require_relative "config/environments/#{environment}.rb"
 
+# Sidekiq client/server configuration (background jobs)
+require_relative 'config/sidekiq'
+
 # Development-specific options
 if [:development, :console].include?(settings.environment)
   require 'pry' # Debug by placing 'binding.pry' where you want the interactive console to start

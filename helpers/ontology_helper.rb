@@ -46,8 +46,7 @@ module Sinatra
 
         if ont_submission.valid?
           ont_submission.save
-          cron = NcboCron::Models::OntologySubmissionParser.new
-          cron.queue_submission(ont_submission, {all: true, params: params})
+          SubmissionProcessWorker.enqueue(ont_submission)
         else
           error 400, ont_submission.errors
         end

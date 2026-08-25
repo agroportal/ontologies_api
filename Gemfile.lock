@@ -455,6 +455,12 @@ GEM
     sentry-ruby (5.28.1)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
+    sidekiq (7.3.10)
+      base64
+      connection_pool (>= 2.3.0, < 3)
+      logger
+      rack (>= 2.2.4, < 3.3)
+      redis-client (>= 0.23.0, < 1)
     signet (0.21.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
@@ -570,6 +576,7 @@ DEPENDENCIES
   rubocop
   sentry-ruby (~> 5.24)
   shotgun!
+  sidekiq (~> 7.3)
   simplecov
   simplecov-cobertura
   sinatra

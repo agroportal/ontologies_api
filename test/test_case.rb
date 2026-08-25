@@ -20,6 +20,9 @@ ENV['RACK_ENV'] = 'test'
 
 require_relative 'test_log_file'
 require_relative '../app'
+# Sidekiq jobs are pushed to in-memory queues in tests, never to Redis
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
 require 'minitest/autorun'
 require 'minitest/hooks/test'
 require 'webmock/minitest'

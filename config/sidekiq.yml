@@ -1,0 +1,8 @@
+---
+# Default capsule: lightweight jobs (emails, misc). Ontology processing runs
+# in the `heavy` capsule defined in config/sidekiq.rb.
+concurrency: <%= (ENV['SIDEKIQ_CONCURRENCY'] || 5).to_i %>
+timeout: 25
+queues:
+  - default
+  - mailers

@@ -78,6 +78,74 @@ bin/ontoportal test <path_to_the_test_file> --name=name_of_the_test # Run single
 bin/ontoportal test all --backend ag # You can specify the backend type to use for tests
 ```
 
+## Background jobs (Sidekiq)
+
+API-triggered work runs asynchronously on [Sidekiq](https://sidekiq.org):
+
+- **Submission processing** (`SubmissionProcessWorker`, queue `parsing`): every API endpoint that used
+  to push into ncbo_cron's `parseQueue` (submission create, ontology create/patch, `POST /:acronym/pull`,
+  admin reprocess) now enqueues a Sidekiq job that delegates to the same
+  `NcboCron::Models::OntologySubmissionParser#process_submission` orchestration (parse → index →
+  metrics → annotator cache → archive old submissions → report refresh).
+- **Emails** (`EmailWorker`, queue `mailers`): all `LinkedData::Utils::Notifier` notifications are
+  delivered from Sidekiq instead of blocking the web request on SMTP (see `lib/utils/notifier_async.rb`).
+
+The ncbo_cron daemon keeps its scheduled jobs (its own remote pulls, flush, reports); those still use its
+internal `parseQueue` and never overlap with API-created submissions.
+
+### Running the worker
+
+```bash
+docker compose up sidekiq        # image gems (also started automatically with the api service)
+bin/ontoportal sidekiq           # with your local gem overrides, same options as `dev`
+bin/ontoportal sidekiq --linked-data-path ../ontologies_linked_data
+```
+
+If you develop with local gem paths, stop the compose `sidekiq` service and use `bin/ontoportal sidekiq`
+instead, otherwise the compose worker processes jobs with the image's gem versions.
+
+> **After `--reset-cache` / `--provision-ontology`**: those wipe the docker volumes, and the `app_api`
+> volume is re-seeded from the `agroportal/ontologies_api:development` image — code changes that are
+> not in the image (a changed Gemfile included) silently disappear from the containers. Rebuild the
+> image after code changes (`docker build -t agroportal/ontologies_api:development .`), or re-sync the
+> volume: `tar -C . --exclude .git -cf - . | docker run --rm -i -v ontoportal_docker_app_api:/dst alpine tar -C /dst -xf -`
+
+Concurrency: the `parsing` queue runs in a dedicated Sidekiq capsule limited to
+`SIDEKIQ_PARSING_CONCURRENCY` (default 1: one OWLAPI parse at a time, like the cron daemon's global
+lock); `default`/`mailers` run at `SIDEKIQ_CONCURRENCY` (see `config/sidekiq.rb` / `config/sidekiq.yml`).
+
+### Logs
+
+- Worker process + job logs: `docker compose logs -f sidekiq`, also appended to `log/sidekiq.log`
+  inside the `app_api` volume (`docker compose exec sidekiq tail -f log/sidekiq.log`).
+- Per-submission parse log (same location ncbo_cron used): `<REPOSITORY_FOLDER>/<ACRONYM>/<submissionId>/parsing.log`
+  in the `repository` volume.
+
+### Web UI
+
+Set `SIDEKIQ_WEB_USER` and `SIDEKIQ_WEB_PASSWORD` (see `.env.sample`) and the Sidekiq dashboard is
+served at `http://localhost:9393/sidekiq` behind basic auth. Without credentials it is not mounted.
+
+### Redis & durability
+
+Sidekiq state (pending queues, scheduled/retry/dead sets, stats) lives **only** in Redis, in the
+dedicated database `REDIS_SIDEKIQ_DB` (default 10) on `REDIS_SIDEKIQ_HOST`. The dev `redis-ut` runs
+with `--save "" --appendonly no`: a Redis restart, `FLUSHALL`, or `bin/ontoportal dev --reset-cache`
+deletes every queued/retrying job (running jobs finish but are not re-enqueued). The separate DB only
+isolates Sidekiq keys from the goo/http/annotator caches (DB 0). **In production point
+`REDIS_SIDEKIQ_*` at a persistent Redis (AOF enabled).**
+
+### Retries & failure semantics
+
+- Transient failures (backend unreachable/timeout: Virtuoso/4store, Solr, Redis, remote pull host)
+  are retried up to 4 times with exponential backoff.
+- Permanent failures (invalid submission, broken/unsupported ontology file, missing upload) are
+  **not retried**: the job goes straight to the Dead set in the Web UI, where it can be inspected and
+  retried manually after fixing the cause. The submission keeps its `ERROR_*` status either way.
+- Processing is guarded by a per-submission Redis lock (24h TTL): the same submission is never parsed
+  twice concurrently; a duplicate request re-schedules itself 10 minutes later. Delivery is
+  at-least-once: re-runs are safe (RDF generation deletes and reloads the submission graph), but the
+  "parsing failed" email can be sent once per retry attempt.
 
 ## Manually 
 ### Prerequisites

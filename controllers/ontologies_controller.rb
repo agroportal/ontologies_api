@@ -63,7 +63,7 @@ class OntologiesController < ApplicationController
       check_last_modified(latest)
       latest.bring(*OntologySubmission.goo_attrs_to_load(includes_param))
       error 404, "Ontology #{params["acronym"]} is not configured to be remotely pulled" unless latest.remote_pulled?
-      NcboCron::Models::OntologySubmissionParser.new.queue_submission(latest, actions)
+      SubmissionProcessWorker.enqueue(latest, actions)
       LOGGER.info "Ontology #{params['acronym']} has been queued for pull and processing"
       halt 204
     end
@@ -84,8 +84,7 @@ class OntologiesController < ApplicationController
       if submission.valid?
         submission.save
         if (params.keys & REQUIRES_REPROCESS).length > 0 || request_has_file?
-          cron = NcboCron::Models::OntologySubmissionParser.new
-          cron.queue_submission(submission, {all: true})
+          SubmissionProcessWorker.enqueue(submission)
         end
       else
         error 422, submission.errors

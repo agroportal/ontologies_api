@@ -49,12 +49,44 @@ services:
         condition: service_started
       ncbo_cron:
         condition: service_started
+      sidekiq:
+        condition: service_started
     ports:
       - "9393:9393"
     volumes:
       # bundle volume for hosting gems installed by bundle; it speeds up gem install in local development
       - app_api:/srv/ontoportal/ontologies_api
       - repository:/srv/ontoportal/data/repository
+      - bundle:/srv/ontoportal/bundle
+
+  sidekiq:
+    <<: *app
+    env_file:
+      .env
+    environment:
+      <<: *env
+      # Always run the locked gem versions: the shared .bundle/config may hold
+      # `bundle config local.*` overrides from bin/ontoportal whose paths are
+      # not mounted in this service (use `bin/ontoportal sidekiq` for those).
+      BUNDLE_IGNORE_CONFIG: '1'
+      # Match the api service environment (the image exports RAILS_ENV=production,
+      # which the sidekiq CLI would otherwise adopt)
+      APP_ENV: development
+    command: bash -c "(bundle check || bundle install) && mkdir -p log && bundle exec sidekiq -r ./config/sidekiq_boot.rb -C config/sidekiq.yml 2>&1 | tee -a log/sidekiq.log"
+    depends_on:
+      solr-ut:
+        condition: service_healthy
+      redis-ut:
+        condition: service_healthy
+      mgrep-ut:
+        condition: service_started
+      virtuoso-ut:
+        condition: service_started
+    volumes:
+      - app_api:/srv/ontoportal/ontologies_api
+      - repository:/srv/ontoportal/data/repository
+      - reports:/srv/ontoportal/data/reports
+      - mgrep:/srv/ontoportal/data/mgrep
       - bundle:/srv/ontoportal/bundle
 
   ncbo_cron:
@@ -65,7 +97,9 @@ services:
     environment:
       <<: *env
       BUNDLE_APP_CONFIG: /srv/ontoportal/ncbo_cron/.bundle
-    command: "bundle exec bin/ncbo_cron"
+    # Self-heal like the sidekiq service: the shared bundle volume is wiped by
+    # --reset-cache / --provision-ontology and must be repopulated on boot
+    command: bash -c "(bundle check || bundle install) && bundle exec bin/ncbo_cron"
     volumes:
       - app_cron:/srv/ontoportal/ncbo_cron
       - repository:/srv/ontoportal/data/repository
