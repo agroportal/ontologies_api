@@ -79,4 +79,51 @@ class TestRepliesController < TestCase
     assert last_response.status == 204
   end
 
+  def test_delete_reply_removes_note_reference
+    note = LinkedData::Models::Note.new({
+      creator: @@user,
+      subject: "Note for delete reference test",
+      body: "Body for delete reference test",
+      relatedOntology: [@@ontology]
+    })
+    note.save
+
+    reply = LinkedData::Models::Notes::Reply.new({
+      creator: @@user,
+      body: "Reply to be deleted"
+    })
+    reply.save
+
+    child = LinkedData::Models::Notes::Reply.new({
+      creator: @@user,
+      body: "Child of the deleted reply",
+      parent: reply
+    })
+    child.save
+
+    note.reply = (note.reply || []).dup.push(reply)
+    note.save
+
+    reply_id = reply.id
+    child_id = child.id
+
+    delete reply_id.to_s
+    assert_equal 204, last_response.status
+
+    # The reply and its child are gone
+    assert_nil LinkedData::Models::Notes::Reply.find(reply_id).first
+    assert_nil LinkedData::Models::Notes::Reply.find(child_id).first
+
+    # The parent note no longer references the deleted reply
+    note_after = LinkedData::Models::Note.find(note.id).include(:reply).first
+    refute_includes (note_after.reply || []).map { |r| r.id }, reply_id
+
+    note_after.delete
+  end
+
+  def test_delete_missing_reply_returns_404
+    delete "/replies/does-not-exist"
+    assert_equal 404, last_response.status
+  end
+
 end

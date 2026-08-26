@@ -29,8 +29,8 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ncbo_cron.git
-  revision: 1447bf247caca0858cf4d454ec44fec6f3a44b55
-  branch: development
+  revision: d3da6888c0efb62e4b1e790e478f9e00b73acaae
+  branch: master
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -57,8 +57,8 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ontologies_linked_data.git
-  revision: f065870618a38c470df9287e3bb5e6696dbe260d
-  branch: development
+  revision: 9cbb261da18f58ef539053c9cfeddfbfba9b8c55
+  branch: master
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
