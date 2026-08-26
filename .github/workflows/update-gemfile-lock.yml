@@ -1,0 +1,58 @@
+# Manually-triggered refresh of the git-sourced gems in Gemfile.lock.
+#
+# Run it from Actions -> Update Gemfile.lock -> Run workflow. The branch picker selects
+# what gets updated (master by default); the commit is pushed straight to that branch.
+name: Update Gemfile.lock
+
+on:
+  workflow_dispatch:
+    inputs:
+      gems:
+        description: 'Space-separated gems to refresh'
+        default: 'ontologies_linked_data'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  update-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1.0'
+          bundler-cache: false   # we only re-resolve, we never install the gems
+
+      - name: Refresh git revisions in Gemfile.lock
+        id: relock
+        env:
+          GEMS: ${{ inputs.gems }}
+        run: |
+          set -eu
+          UPDATE_FLAGS=""
+          for gem in $GEMS; do
+            UPDATE_FLAGS="$UPDATE_FLAGS --update=$gem"
+          done
+          # --conservative: bump the git revision only, don't drag shared rubygems deps along
+          bundle lock $UPDATE_FLAGS --conservative
+
+          if git diff --quiet -- Gemfile.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Gemfile.lock is already up to date."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git --no-pager diff -- Gemfile.lock
+          fi
+
+      - name: Commit and push
+        if: steps.relock.outputs.changed == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add Gemfile.lock
+          git commit -m 'build: update Gemfile.lock to latest dependency revisions'
+          git push origin HEAD:${{ github.ref_name }}
