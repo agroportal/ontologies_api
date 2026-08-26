@@ -70,4 +70,3 @@ create_permissions.log
 ontologies_api.iml
 
 .env
-docker-compose.override.yml
