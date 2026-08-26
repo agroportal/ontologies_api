@@ -1,8 +1,7 @@
 # Manually-triggered refresh of the git-sourced gems in Gemfile.lock.
 #
 # Run it from Actions -> Update Gemfile.lock -> Run workflow. The branch picker selects
-# the base branch (master by default); the result is proposed as a pull request against
-# it, since the protected branches don't accept direct pushes.
+# what gets updated (master by default); the commit is pushed straight to that branch.
 name: Update Gemfile.lock
 
 on:
@@ -15,15 +14,10 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   update-lock:
     runs-on: ubuntu-latest
-    env:
-      # One branch per base branch, so re-running the workflow updates the open PR
-      # instead of piling up new ones.
-      BRANCH: bot/update-gemfile-lock-${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -54,29 +48,11 @@ jobs:
             git --no-pager diff -- Gemfile.lock
           fi
 
-      - name: Push branch and open pull request
+      - name: Commit and push
         if: steps.relock.outputs.changed == 'true'
-        env:
-          GEMS: ${{ inputs.gems }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -eu
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git checkout -b "$BRANCH"
           git add Gemfile.lock
           git commit -m 'build: update Gemfile.lock to latest dependency revisions'
-          git push --force origin "HEAD:refs/heads/$BRANCH"
-
-          if [ -n "$(gh pr list --head "$BRANCH" --base "$GITHUB_REF_NAME" --state open --json number --jq '.[].number')" ]; then
-            echo "Updated the existing pull request for $BRANCH."
-          else
-            BODY=$(printf '%s\n\n%s\n' \
-              "Refreshed git revisions in \`Gemfile.lock\` for: \`$GEMS\`." \
-              "Opened by the [Update Gemfile.lock]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID) workflow.")
-            gh pr create \
-              --base "$GITHUB_REF_NAME" \
-              --head "$BRANCH" \
-              --title 'build: update Gemfile.lock to latest dependency revisions' \
-              --body "$BODY"
-          fi
+          git push origin HEAD:${{ github.ref_name }}
