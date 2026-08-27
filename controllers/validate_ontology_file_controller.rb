@@ -64,6 +64,7 @@ class ValidateOntologyFileController < ApplicationController
         "org.semanticweb.owlapi.functional.parser.OWLFunctionalSyntaxOWLParser",
         "org.semanticweb.owlapi.manchestersyntax.parser.ManchesterOWLSyntaxOntologyParser"
       ],
+      "xlsx" => [],
       "unknown" => ["org.bioontology.UnknownParseError"]
     }
     def extract_error_message(error_lines, format)

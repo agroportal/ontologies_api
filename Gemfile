@@ -52,9 +52,9 @@ gem 'pandoc-ruby'
 
 # NCBO gems (can be from a local dev path or from rubygems/git)
 gem 'ncbo_annotator', git: 'https://github.com/agroportal/ncbo_annotator.git', branch: 'development'
-gem 'ncbo_cron', git: 'https://github.com/agroportal/ncbo_cron.git', branch: 'development'
+gem 'ncbo_cron', git: 'https://github.com/agroportal/ncbo_cron.git', branch: 'master'
 gem 'ncbo_ontology_recommender', git: 'https://github.com/agroportal/ncbo_ontology_recommender.git', branch: 'development'
-gem 'ontologies_linked_data', github: 'agroportal/ontologies_linked_data', branch: 'development'
+gem 'ontologies_linked_data', github: 'agroportal/ontologies_linked_data', branch: 'master'
 gem 'goo', github: 'agroportal/goo', branch: 'development'
 gem 'sparql-client', github: 'agroportal/sparql-client', branch: 'development'
 

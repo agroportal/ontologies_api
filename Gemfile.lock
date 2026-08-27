@@ -29,8 +29,8 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ncbo_cron.git
-  revision: 1447bf247caca0858cf4d454ec44fec6f3a44b55
-  branch: development
+  revision: d3da6888c0efb62e4b1e790e478f9e00b73acaae
+  branch: master
   specs:
     ncbo_cron (0.0.1)
       dante
@@ -57,8 +57,8 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ontologies_linked_data.git
-  revision: f065870618a38c470df9287e3bb5e6696dbe260d
-  branch: development
+  revision: d987060527fe6745d1eef69581c13551f4737dd3
+  branch: master
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
@@ -72,8 +72,10 @@ GIT
       pony
       rack
       rack-test
+      rdf-rdfxml
+      roo
       rsolr
-      rubyzip
+      rubyzip (= 1.3.0)
 
 GIT
   remote: https://github.com/agroportal/sparql-client.git
@@ -306,6 +308,7 @@ GEM
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2026.0414)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
     minitest (5.27.0)
     minitest-fail-fast (0.2.0)
       minitest (>= 5.0, < 7)
@@ -343,6 +346,9 @@ GEM
       net-protocol
     net-ssh (7.3.2)
     netrc (0.11.0)
+    nokogiri (1.18.10)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     oj (3.17.0)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
@@ -429,6 +435,9 @@ GEM
       netrc (~> 0.8)
     retriable (3.4.1)
     rexml (3.4.4)
+    roo (2.10.1)
+      nokogiri (~> 1)
+      rubyzip (>= 1.3.0, < 3.0.0)
     rsolr (2.6.0)
       builder (>= 2.1.2)
       faraday (>= 0.9, < 3, != 2.0.0)
@@ -448,7 +457,7 @@ GEM
       prism (~> 1.7)
     ruby-progressbar (1.13.0)
     ruby-xxHash (0.4.0.2)
-    rubyzip (3.3.0)
+    rubyzip (1.3.0)
     rufus-scheduler (3.9.2)
       fugit (~> 1.1, >= 1.11.1)
     securerandom (0.4.1)
