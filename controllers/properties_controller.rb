@@ -12,7 +12,14 @@ class PropertiesController < ApplicationController
         error 404, e.message
       end
 
-      reply props
+      if params["page"] || params["pagesize"]
+        _, page, size = settings_params(LinkedData::Models::OntologyProperty).first(3)
+        paginated_props = Goo::Base::Page.new(page, size, props.length, props.first(size))
+        reply paginated_props
+      else
+        reply props
+      end
+
     end
 
     get '/roots' do

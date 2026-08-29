@@ -10,12 +10,19 @@ class OntologiesController < ApplicationController
       onts = nil
       check_last_modified_collection(Ontology)
       allow_views = params['also_include_views'] ||= false
-      if allow_views
-        onts = Ontology.where.include(Ontology.goo_attrs_to_load(includes_param)).to_a
+      paging = params["page"] || params["pagesize"]
+      
+      base_query = if allow_views
+                     Ontology.where.include(Ontology.goo_attrs_to_load(includes_param))
+                   else
+                     Ontology.where.filter(Goo::Filter.new(:viewOf).unbound).include(Ontology.goo_attrs_to_load(includes_param))
+                   end
+      if paging
+        _, page, size = settings_params(Ontology).first(3)
+        reply base_query.page(page, size).all
       else
-        onts = Ontology.where.filter(Goo::Filter.new(:viewOf).unbound).include(Ontology.goo_attrs_to_load(includes_param)).to_a
+        reply base_query.to_a
       end
-      reply onts
     end
 
     ##
