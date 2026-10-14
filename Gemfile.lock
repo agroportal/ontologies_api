@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/agroportal/goo.git
-  revision: 04680ed78dfd98cfe004d9a1d7019f3f06e9b667
-  branch: development
+  revision: eafaa40847d3537d3ff07de067397f87382bf662
+  branch: master
   specs:
     goo (0.0.2)
       addressable (~> 2.8)
