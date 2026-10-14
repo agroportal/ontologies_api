@@ -168,7 +168,51 @@ class OntologiesController < ApplicationController
       end
     end
 
+    get '/:acronym/documentation' do
+      serve_documentation_file(params["acronym"], 'index-en.html')
+    end
+
+    get '/:acronym/documentation/*' do
+      requested_path = params[:splat].first
+      requested_path = 'index-en.html' if requested_path.to_s.empty?
+      serve_documentation_file(params["acronym"], requested_path)
+    end
+
     private
+
+    DOCUMENTATION_MIME = {
+      '.html' => 'text/html', '.css' => 'text/css', '.js' => 'application/javascript',
+      '.mjs' => 'application/javascript', '.json' => 'application/json',
+      '.jsonld' => 'application/ld+json', '.svg' => 'image/svg+xml', '.png' => 'image/png',
+      '.jpg' => 'image/jpeg', '.jpeg' => 'image/jpeg', '.gif' => 'image/gif',
+      '.ico' => 'image/x-icon', '.txt' => 'text/plain', '.ttl' => 'text/turtle',
+      '.nt' => 'application/n-triples', '.owl' => 'application/rdf+xml',
+      '.xml' => 'application/xml', '.woff' => 'font/woff', '.woff2' => 'font/woff2'
+    }.freeze
+
+    def documentation_content_type(path)
+      DOCUMENTATION_MIME.fetch(File.extname(path).downcase, 'application/octet-stream')
+    end
+
+    def serve_documentation_file(acronym, requested_path)
+      ont = Ontology.find(acronym).include(Ontology.goo_attrs_to_load).first
+      error 404, "Ontology #{acronym} not found" if ont.nil?
+      ont.bring(:viewingRestriction) if ont.bring?(:viewingRestriction)
+      check_access(ont)
+
+      sub = ont.latest_submission(status: :documentation)
+      error 404, "No documentation available for ontology #{acronym}" if sub.nil?
+
+      doc_folder = File.expand_path(sub.documentation_folder)
+      file_path = File.expand_path(File.join(doc_folder, requested_path))
+      unless file_path == doc_folder || file_path.start_with?("#{doc_folder}#{File::SEPARATOR}")
+        error 400, "Invalid documentation path"
+      end
+      error 404, "Documentation file not found: #{requested_path}" unless File.file?(file_path)
+
+      content_type documentation_content_type(file_path)
+      send_file file_path, disposition: 'inline'
+    end
 
     def create_ontology
       params ||= @params
