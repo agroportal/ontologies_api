@@ -168,6 +168,24 @@ class OntologiesController < ApplicationController
       end
     end
 
+    ##
+    # FAIRness report computed once by the submission pipeline
+    get '/:acronym/foops' do
+      ont = Ontology.find(params["acronym"]).include(Ontology.goo_attrs_to_load).first
+      error 404, "Ontology #{params['acronym']} not found" if ont.nil?
+      ont.bring(:viewingRestriction) if ont.bring?(:viewingRestriction)
+      check_access(ont)
+
+      sub = ont.latest_submission(status: :fairness_foops)
+      error 404, "No FAIRness report available for ontology #{params['acronym']}" if sub.nil?
+
+      report_path = sub.foops_report_path
+      error 404, "FAIRness report not found for ontology #{params['acronym']}" unless File.file?(report_path)
+
+      content_type 'application/json'
+      send_file report_path, disposition: 'inline'
+    end
+
     private
 
     def create_ontology
