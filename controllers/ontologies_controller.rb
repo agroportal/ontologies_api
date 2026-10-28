@@ -186,7 +186,61 @@ class OntologiesController < ApplicationController
       send_file report_path, disposition: 'inline'
     end
 
+    ##
+    # WebVOWL visualisation. The shared front-end and the per ontology data
+    # must answer under the same prefix: the bundled viewer only loads a static
+    # graph through its preset mode, which fetches "./data/ontology.json"
+    # relative to the document.
+    # The trailing slash matters: the viewer loads every asset with a relative
+    # URL, which would otherwise resolve against the parent path.
+    get '/:acronym/vowl' do
+      redirect "#{request.path}/", 301
+    end
+
+    get '/:acronym/vowl/*' do
+      requested = params[:splat].first
+      requested = 'index.html' if requested.to_s.empty?
+      serve_vowl_file(params["acronym"], requested)
+    end
+
     private
+
+    WEBVOWL_FRONT = File.expand_path('../public/webvowl', __dir__).freeze
+    WEBVOWL_DATA_PATH = 'data/ontology.json'.freeze
+
+    VOWL_MIME = {
+      '.html' => 'text/html', '.css' => 'text/css', '.js' => 'application/javascript',
+      '.json' => 'application/json', '.ico' => 'image/x-icon', '.txt' => 'text/plain',
+      '.png' => 'image/png', '.svg' => 'image/svg+xml'
+    }.freeze
+
+    def serve_vowl_file(acronym, requested)
+      ont = Ontology.find(acronym).include(Ontology.goo_attrs_to_load).first
+      error 404, "Ontology #{acronym} not found" if ont.nil?
+      ont.bring(:viewingRestriction) if ont.bring?(:viewingRestriction)
+      check_access(ont)
+
+      file_path =
+        if requested.eql?(WEBVOWL_DATA_PATH)
+          sub = ont.latest_submission(status: :vowl)
+          error 404, "No visualisation available for ontology #{acronym}" if sub.nil?
+          sub.vowl_json_path
+        else
+          within(WEBVOWL_FRONT, requested)
+        end
+
+      error 404, "Visualisation file not found: #{requested}" unless File.file?(file_path)
+
+      content_type VOWL_MIME.fetch(File.extname(file_path).downcase, 'application/octet-stream')
+      send_file file_path, disposition: 'inline'
+    end
+
+    def within(root, requested)
+      path = File.expand_path(File.join(root, requested))
+      error 400, "Invalid path" unless path == root || path.start_with?("#{root}#{File::SEPARATOR}")
+
+      path
+    end
 
     def create_ontology
       params ||= @params
