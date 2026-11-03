@@ -1,5 +1,5 @@
 x-app: &app
-  image: agroportal/ontologies_api:development
+  image: agroportal/ontologies_api:master
   environment: &env
     # default bundle config resolves to /usr/local/bundle/config inside of the container
     # we are setting it to local app directory if we need to use 'bundle config local'
@@ -59,7 +59,7 @@ services:
 
   ncbo_cron:
     <<: *app
-    image: agroportal/ncbo_cron:development
+    image: agroportal/ncbo_cron:master
     env_file:
       .env
     environment:
@@ -156,7 +156,7 @@ services:
       - ag
 
   virtuoso-ut:
-    image: tenforce/virtuoso:virtuoso7.2.5
+    image: openlink/virtuoso-opensource-7:7.2.17
     platform: linux/amd64
     environment:
       - SPARQL_UPDATE=true
