@@ -158,8 +158,9 @@ services:
   virtuoso-ut:
     image: openlink/virtuoso-opensource-7:7.2.17
     platform: linux/amd64
-    environment:
-      - SPARQL_UPDATE=true
+    configs:
+      - source: virtuoso_grant_write_access
+        target: /opt/virtuoso-opensource/initdb.d/1-grant-write-access.sql
     ports:
       - 1111:1111
       - 8890:8890
@@ -189,6 +190,15 @@ services:
       bash -c " importrdf load -f -c /opt/graphdb/dist/configs/templates/data/graphdb-repo-config.ttl -m parallel /opt/graphdb/dist/configs/templates/data/graphdb-test-load.nt ; graphdb -Ddefault.min.distinct.threshold=3000 "
     profiles:
       - gb
+
+# Inline, not a mounted file: ontoportal_docker downloads only this
+# compose file to boot the API for the UI tests.
+configs:
+  virtuoso_grant_write_access:
+    content: |
+      GRANT EXECUTE ON DB.DBA.SPARQL_INSERT_DICT_CONTENT TO "SPARQL";
+      GRANT SPARQL_UPDATE TO "SPARQL";
+      DB.DBA.RDF_DEFAULT_USER_PERMS_SET ('nobody', 7);
 
 volumes:
   app_api:
