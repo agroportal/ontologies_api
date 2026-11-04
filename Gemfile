@@ -91,4 +91,5 @@ group :test do
   gem 'simplecov-cobertura' # for codecov.io
   gem 'webmock'
   gem 'webrick'
+  gem 'ontoportal_testkit', github: 'agroportal/ontoportal_testkit', ref: 'c73bfc6f3ce257440690e1e4bfd001f64474ec48'
 end

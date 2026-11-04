@@ -1,0 +1,10 @@
+component_name: ontologies_api
+app_service: test-container
+target: test
+backends:
+  - fs
+  - ag
+  - vo
+  - gd
+dependency_services:
+  - mgrep

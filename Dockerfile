@@ -4,7 +4,8 @@
 ARG RUBY_VERSION=3.1
 ARG DISTRO_NAME=slim-bookworm
 
-FROM ruby:${RUBY_VERSION}-${DISTRO_NAME}
+# OS, Java, Raptor and gems shared by both images, so CI tests the runtime we ship
+FROM ruby:${RUBY_VERSION}-${DISTRO_NAME} AS base
 
 WORKDIR /srv/ontoportal/ontologies_api
 
@@ -42,6 +43,22 @@ COPY Gemfile* ./
 
 # Install dependencies
 RUN bundle install --jobs ${BUNDLE_JOBS} --retry ${BUNDLE_RETRY}
+
+# Built by ontoportal_testkit (target: test in .ontoportal-testkit.yml).
+# /app because the testkit mounts coverage at /app/coverage; gems stay in BUNDLE_PATH
+FROM base AS test
+
+WORKDIR /app
+
+# Slice size the old CI ran with (config default: 500); small slices keep goo's sliced loading exercised
+ENV GOO_SLICES=100
+
+COPY . .
+
+CMD ["bundle", "exec", "rake"]
+
+# Published agroportal/ontologies_api image. Last, so builds without a target get it
+FROM base AS production
 
 # Copy application code
 COPY . .

@@ -78,6 +78,14 @@ GIT
       rubyzip (= 1.3.0)
 
 GIT
+  remote: https://github.com/agroportal/ontoportal_testkit.git
+  revision: c73bfc6f3ce257440690e1e4bfd001f64474ec48
+  ref: c73bfc6f3ce257440690e1e4bfd001f64474ec48
+  specs:
+    ontoportal_testkit (0.1.0)
+      rake (>= 13.0)
+
+GIT
   remote: https://github.com/agroportal/sparql-client.git
   revision: 736b7650e28db3ce5e3e49511ac30f958a29e8f1
   branch: development
@@ -555,6 +563,7 @@ DEPENDENCIES
   net-ftp
   oj
   ontologies_linked_data!
+  ontoportal_testkit!
   pandoc-ruby
   parallel
   parseconfig
