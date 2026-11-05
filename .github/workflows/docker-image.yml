@@ -53,7 +53,7 @@ jobs:
           target: production
           platforms: linux/amd64,linux/arm64
           build-args: |
-            RUBY_VERSION=3.1
+            RUBY_VERSION=3.2
             BUILDPLATFORM=${{ github.job_name }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}

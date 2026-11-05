@@ -1,9 +1,10 @@
 GIT
   remote: https://github.com/agroportal/goo.git
-  revision: eafaa40847d3537d3ff07de067397f87382bf662
+  revision: 5ad999bc454d561de6e23cdf9a298d7dddfaf78d
   branch: master
   specs:
     goo (0.0.2)
+      activesupport
       addressable (~> 2.8)
       pry
       rdf
@@ -11,9 +12,11 @@ GIT
       rdf-rdfxml
       rdf-vocab
       redis
+      request_store
       rest-client
-      rsolr
-      sparql-client
+      rsolr (>= 2.6.0)
+      sparql-client (= 3.2.2)
+      stoplight (~> 5.0)
       uuid
 
 GIT
@@ -29,7 +32,7 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ncbo_cron.git
-  revision: d3da6888c0efb62e4b1e790e478f9e00b73acaae
+  revision: ba981b6ba16c8e9e23d9dbf899bf1dd4f5b7eabf
   branch: master
   specs:
     ncbo_cron (0.0.1)
@@ -57,7 +60,7 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ontologies_linked_data.git
-  revision: 2f2faacf924148252628bf149fda07316640ed1c
+  revision: 144bc44ab0c1e029f0fb3ac52a35c23fa56c5455
   branch: master
   specs:
     ontologies_linked_data (0.0.1)
@@ -84,15 +87,6 @@ GIT
   specs:
     ontoportal_testkit (0.1.0)
       rake (>= 13.0)
-
-GIT
-  remote: https://github.com/agroportal/sparql-client.git
-  revision: 736b7650e28db3ce5e3e49511ac30f958a29e8f1
-  branch: development
-  specs:
-    sparql-client (3.2.2)
-      net-http-persistent (~> 4.0, >= 4.0.2)
-      rdf (~> 3.2, >= 3.2.11)
 
 GIT
   remote: https://github.com/palexander/rack-post-body-to-params.git
@@ -493,6 +487,9 @@ GEM
       rack-protection (= 4.2.1)
       rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
+    sparql-client (3.2.2)
+      net-http-persistent (~> 4.0, >= 4.0.2)
+      rdf (~> 3.2, >= 3.2.11)
     sshkit (1.25.0)
       base64
       logger
@@ -500,6 +497,9 @@ GEM
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
       ostruct
+    stoplight (5.8.3)
+      concurrent-ruby
+      zeitwerk
     systemu (2.6.5)
     temple (0.10.4)
     tilt (2.7.0)
@@ -527,6 +527,7 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.9.2)
+    zeitwerk (2.8.3)
 
 PLATFORMS
   arm64-darwin
@@ -592,7 +593,6 @@ DEPENDENCIES
   simplecov-cobertura
   sinatra
   sinatra-contrib!
-  sparql-client!
   unicorn
   unicorn-worker-killer
   webmock
