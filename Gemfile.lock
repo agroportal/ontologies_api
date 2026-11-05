@@ -21,8 +21,8 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ncbo_annotator.git
-  revision: aeb0222400f1b423cb865545c41233d2cbd82bfc
-  branch: development
+  revision: 64d68acfd71e4fccb3958f9256c8d8525029929f
+  branch: master
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -49,8 +49,8 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ncbo_ontology_recommender.git
-  revision: a0e36c89e6e2f8502cac288df2992625649dad7a
-  branch: development
+  revision: a547135098d2ef00c5ef257a46c6f8cf0b82608d
+  branch: master
   specs:
     ncbo_ontology_recommender (0.0.1)
       goo
