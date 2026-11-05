@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Build arguments with specific versions for better reproducibility
-ARG RUBY_VERSION=3.1
+ARG RUBY_VERSION=3.2
 ARG DISTRO_NAME=slim-bookworm
 
 # OS, Java, Raptor and gems shared by both images, so CI tests the runtime we ship
