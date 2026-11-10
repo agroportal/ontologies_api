@@ -84,8 +84,8 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ontoportal_testkit.git
-  revision: 284f32127185fea72816d0062ba8e0da4723cb9b
-  branch: chore/ruby-3.4.12-bookworm
+  revision: 3f670c9b3072a3550ce706bc9283bf09a3cd9c45
+  branch: main
   specs:
     ontoportal_testkit (0.1.0)
       rake (>= 13.0)
