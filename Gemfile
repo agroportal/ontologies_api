@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 gem 'activesupport'
 gem 'bigdecimal'
+gem 'csv' # left Ruby's default gems in 3.4
 gem 'json-schema'
 gem 'multi_json'
 gem 'oj'
@@ -54,8 +55,8 @@ gem 'pandoc-ruby'
 gem 'ncbo_annotator', git: 'https://github.com/agroportal/ncbo_annotator.git', branch: 'master'
 gem 'ncbo_cron', git: 'https://github.com/agroportal/ncbo_cron.git', branch: 'master'
 gem 'ncbo_ontology_recommender', git: 'https://github.com/agroportal/ncbo_ontology_recommender.git', branch: 'master'
-gem 'ontologies_linked_data', github: 'agroportal/ontologies_linked_data', branch: 'master'
-gem 'goo', github: 'agroportal/goo', branch: 'master'
+gem 'ontologies_linked_data', github: 'agroportal/ontologies_linked_data', branch: 'chore/ruby-3.4.12'
+gem 'goo', github: 'agroportal/goo', branch: 'chore/ruby-3.4.12'
 
 group :development do
   # bcrypt_pbkdf and ed35519 is required for capistrano deployments when using ed25519 keys; see https://github.com/miloserdow/capistrano-deploy/issues/42
@@ -90,5 +91,5 @@ group :test do
   gem 'simplecov-cobertura' # for codecov.io
   gem 'webmock'
   gem 'webrick'
-  gem 'ontoportal_testkit', github: 'agroportal/ontoportal_testkit', ref: 'c73bfc6f3ce257440690e1e4bfd001f64474ec48'
+  gem 'ontoportal_testkit', github: 'agroportal/ontoportal_testkit', branch: 'chore/ruby-3.4.12-bookworm'
 end
