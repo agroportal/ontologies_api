@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/agroportal/goo.git
-  revision: 24adc28751591673ec5ce3d36c2fdcc32339e844
-  branch: chore/ruby-3.4.12
+  revision: 8e25ea9dc014cd9530d25366b0ad1901108d1f13
+  branch: master
   specs:
     goo (0.0.2)
       activesupport
@@ -61,8 +61,8 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ontologies_linked_data.git
-  revision: 0cade277abb550e2f8d5ba42a4cfb637be1a0028
-  branch: chore/ruby-3.4.12
+  revision: e94fff53f778c656b4583b976d5a562e8cf1ac9f
+  branch: master
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
