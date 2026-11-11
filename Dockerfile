@@ -1,11 +1,12 @@
 # syntax=docker/dockerfile:1
 
-# Build arguments with specific versions for better reproducibility
-ARG RUBY_VERSION=3.2
+# Set from .ruby-version, the single Ruby pin: by ontoportal_testkit for the
+# test image, by docker-image.yml for the production one
+ARG OPTK_RUBY_VERSION
 ARG DISTRO_NAME=slim-bookworm
 
 # OS, Java, Raptor and gems shared by both images, so CI tests the runtime we ship
-FROM ruby:${RUBY_VERSION}-${DISTRO_NAME} AS base
+FROM ruby:${OPTK_RUBY_VERSION}-${DISTRO_NAME} AS base
 
 WORKDIR /srv/ontoportal/ontologies_api
 

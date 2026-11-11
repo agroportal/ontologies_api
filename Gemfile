@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 gem 'activesupport'
 gem 'bigdecimal'
+gem 'csv' # left Ruby's default gems in 3.4
 gem 'json-schema'
 gem 'multi_json'
 gem 'oj'
@@ -90,5 +91,5 @@ group :test do
   gem 'simplecov-cobertura' # for codecov.io
   gem 'webmock'
   gem 'webrick'
-  gem 'ontoportal_testkit', github: 'agroportal/ontoportal_testkit', ref: 'c73bfc6f3ce257440690e1e4bfd001f64474ec48'
+  gem 'ontoportal_testkit', github: 'agroportal/ontoportal_testkit', branch: 'main'
 end
