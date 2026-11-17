@@ -39,12 +39,10 @@ jobs:
           GEMS: ${{ inputs.gems }}
         run: |
           set -eu
-          UPDATE_FLAGS=""
-          for gem in $GEMS; do
-            UPDATE_FLAGS="$UPDATE_FLAGS --update=$gem"
-          done
+          # One --update for the whole list: Bundler keeps only the last of repeated --update=.
+          # ${GEMS:?} fails on an empty list, which a bare --update would turn into "update every gem".
           # --conservative: bump the git revision only, don't drag shared rubygems deps along
-          bundle lock $UPDATE_FLAGS --conservative
+          bundle lock --update ${GEMS:?no gems to refresh} --conservative
 
           if git diff --quiet -- Gemfile.lock; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
