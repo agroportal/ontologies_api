@@ -1,4 +1,5 @@
 require_relative '../test_case'
+require 'minitest/mock'
 
 class TestInstancesController < TestCase
 
@@ -111,6 +112,24 @@ class TestInstancesController < TestCase
     ont = Ontology.find('XCT-TEST-INST-0').include(:acronym).first
     get "ontologies/#{ont.acronym}/classes/#{cls_id}/instances"
     assert_equal 404, last_response.status
+  end
+
+  def test_instance_not_found_skips_unmapped_load
+    ont = Ontology.find('XCT-TEST-INST-0').include(:acronym).first
+    # A class, not an individual: like AGROVOC's reified definitions (xDef_*)
+    inst_id = CGI.escape('http://www.owl-ontologies.com/OntologyXCT.owl#Study')
+
+    # Loading unmapped attributes with no model to load them for drops the id
+    # filter and scans every individual of the submission. On AGROVOC Virtuoso
+    # refuses that query, and the call fails with a 500 instead of a 404.
+    unmapped_loads = 0
+    count_load = ->(*args) { unmapped_loads += 1; LinkedData::Models::Instance.where.in(*args) }
+    LinkedData::Models::Instance.stub(:in, count_load) do
+      get "/ontologies/#{ont.acronym}/instances/#{inst_id}?include=all"
+    end
+
+    assert_equal 404, last_response.status
+    assert_equal 0, unmapped_loads
   end
 
 end

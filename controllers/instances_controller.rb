@@ -54,6 +54,8 @@ class InstancesController < ApplicationController
       attributes, page, size, order_by, bring_unmapped_needed  =  settings_params(LinkedData::Models::Instance)
 
       page_data = LinkedData::Models::Instance.find(@params["inst"]).include(attributes).in(sub).first
+      # Before the unmapped load: given no model, it scans every individual
+      error 404, "Instance #{@params["inst"]} not found" if page_data.nil?
 
       bring_unmapped_to [page_data] , sub, LinkedData::Models::Instance if bring_unmapped_needed
 
