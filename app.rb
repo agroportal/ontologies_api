@@ -93,6 +93,25 @@ if [:development, :console].include?(settings.environment)
   use Rack::DowncaseHeaders
 end
 
+# Report errors to Sentry. Above the other middlewares, so errors they raise
+# (auth, throttling, cache) are captured too.
+if $SENTRY_DSN
+  require 'sentry-ruby'
+  Sentry.init do |config|
+    config.dsn = $SENTRY_DSN
+    config.environment = $SENTRY_ENVIRONMENT || config.environment
+    config.traces_sample_rate = $SENTRY_TRACES_SAMPLE_RATE
+
+    # Attach headers, query string, body and client IP: API keys and
+    # passwords included
+    config.send_default_pii = true
+  end
+  Sentry.set_tags(application: 'api')
+
+  # use Rack::RewindableInput::Middleware
+  use Sentry::Rack::CaptureExceptions
+end
+
 use Rack::Cors do
   allow do
     origins '*'
@@ -136,20 +155,6 @@ end
 if LinkedData::OntologiesAPI.settings.enable_unicorn_workerkiller
   require 'unicorn'
   require_relative 'config/unicorn_workerkiller'
-end
-
-if $SENTRY_DSN
-  require 'sentry-ruby'
-  Sentry.init do |config|
-    config.dsn = $SENTRY_DSN
-
-    # Add data like request headers and IP for users,
-    # see https://docs.sentry.io/platforms/ruby/data-management/data-collected/ for more info
-    config.send_default_pii = true
-  end
-
-  # use Rack::RewindableInput::Middleware
-  use Sentry::Rack::CaptureExceptions
 end
 
 # Initialize the app
