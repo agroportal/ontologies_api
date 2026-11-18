@@ -33,7 +33,7 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ncbo_cron.git
-  revision: f280068c96d745369a2e70d1dd7570b0b2df8da1
+  revision: c7a2ebdbb4a78eb63b72f0a85053f1305835da8f
   branch: master
   specs:
     ncbo_cron (0.0.1)
@@ -61,7 +61,7 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ontologies_linked_data.git
-  revision: e57e7412dc96c8b037364cdf694af7875c7f7250
+  revision: f99c8743a1eb937f0b8e5210c024311363726506
   branch: master
   specs:
     ontologies_linked_data (0.0.1)
@@ -80,7 +80,7 @@ GIT
       rdf-rdfxml
       roo
       rsolr
-      rubyzip (= 1.3.0)
+      rubyzip (~> 3.0)
 
 GIT
   remote: https://github.com/agroportal/ontoportal_testkit.git
@@ -447,9 +447,12 @@ GEM
       netrc (~> 0.8)
     retriable (3.4.1)
     rexml (3.4.4)
-    roo (2.10.1)
+    roo (4.0.0)
+      base64 (~> 0.2)
+      csv (~> 3)
+      logger (~> 1)
       nokogiri (~> 1)
-      rubyzip (>= 1.3.0, < 3.0.0)
+      rubyzip (>= 3.0.0, < 4.0.0)
     rsolr (2.6.0)
       builder (>= 2.1.2)
       faraday (>= 0.9, < 3, != 2.0.0)
@@ -469,7 +472,7 @@ GEM
       prism (~> 1.7)
     ruby-progressbar (1.13.0)
     ruby-xxHash (0.4.0.2)
-    rubyzip (1.3.0)
+    rubyzip (3.7.0)
     rufus-scheduler (3.9.2)
       fugit (~> 1.1, >= 1.11.1)
     securerandom (0.4.1)
