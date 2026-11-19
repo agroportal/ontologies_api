@@ -79,6 +79,28 @@ class TestArtefactsController < TestCase
         assert_equal expected_data, catalog_data
     end
 
+    # Catalogs saved before Ruby 3.4 hold the old Hash#inspect format
+    def test_home_controller_legacy_hash_format
+        get "/"
+        catalog = LinkedData::Models::SemanticArtefactCatalog.all.first
+        catalog.bring_remaining
+        original = [catalog.federated_portals, catalog.fundedBy]
+
+        catalog.federated_portals = ['{:name=>"agroportal", :api=>"http://data.agroportal.lirmm.fr", :ui=>"http://agroportal.lirmm.fr", :apikey=>"DUMMY_API_KEY_123456", :color=>"#3cb371"}']
+        catalog.fundedBy = ['{:img_src=>"https://ontoportal.org/images/logo.png", :url=>"https://ontoportal.org/"}']
+        catalog.save
+
+        get "/"
+        catalog_data = MultiJson.load(last_response.body)
+        assert_equal [{"name"=>"agroportal", "api"=>"http://data.agroportal.lirmm.fr", "ui"=>"http://agroportal.lirmm.fr", "color"=>"#3cb371"}], catalog_data["federated_portals"]
+        assert_equal [{"img_src"=>"https://ontoportal.org/images/logo.png", "url"=>"https://ontoportal.org/"}], catalog_data["fundedBy"]
+    ensure
+        unless catalog.nil?
+            catalog.federated_portals, catalog.fundedBy = original
+            catalog.save
+        end
+    end
+
     
     def test_all_artefacts
         route = '/mod-api/artefacts'

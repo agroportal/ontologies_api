@@ -24,7 +24,6 @@ Commands:
               ./bin/ontoportal dev --provision-ontology
               ./bin/ontoportal dev --linked-data-path ONTOLOGIES_LINKED_DATA_PATH
               ./bin/ontoportal dev --goo-path GOO_PATH
-              ./bin/ontoportal dev  --sparql-client-path SPARQL_CLIENT_PATH
 
   test      Run tests (all or a specific file).
             Examples:
@@ -48,7 +47,6 @@ Options (dev, test, run):
   --provision-ontology      Create admin user and parse ontology for use.
   --linked-data-path PATH   Path for ontologies_linked_data.
   --goo-path PATH           Path for goo.
-  --sparql-client-path PATH Path for sparql-client.
 
 Notes:
   - 'dev' is for local development with Docker Compose.
@@ -67,7 +65,6 @@ bin/ontoportal dev --provision-user-only
 bin/ontoportal dev --provision-ontology
 bin/ontoportal dev --linked-data-path ONTOLOGIES_LINKED_DATA_PATH
 bin/ontoportal dev --goo-path GOO_PATH
-bin/ontoportal dev  --sparql-client-path SPARQL_CLIENT_PATH
 ```
 
 ### Run test with a local OntoPortal API

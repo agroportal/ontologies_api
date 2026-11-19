@@ -6,11 +6,11 @@ class TestLoggingController < TestCase
   def setup
     Goo.use_cache = true
     Goo.redis_client.flushdb
-    Goo.add_query_logger(enabled: true, file: "./queries.log")
+    Goo.enable_query_logging(enabled: true, file: "./queries.log")
   end
 
   def teardown
-    Goo.add_query_logger(enabled: false, file: nil)
+    Goo.enable_query_logging(enabled: false, file: nil)
     File.delete("./queries.log") if File.exist?("./queries.log")
     Goo.redis_client.flushdb
     Goo.use_cache = false

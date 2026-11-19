@@ -55,13 +55,16 @@ class HomeController < ApplicationController
       catalog
     end
     
+    # Items are stored as Hash#inspect, whose format changed in Ruby 3.4:
+    #   {:name=>"agroportal"}  before 3.4, still in existing triple stores
+    #   {name: "agroportal"}   from 3.4
     def safe_parse(value)
       return nil unless value
-    
+
       parse_item = ->(item) {
         begin
           parsed = JSON.parse(
-            item.gsub(/:(\w+)=>/, '"\1":').gsub('=>', ':').gsub('\"', '"')
+            item.gsub(/([{,]\s*)(\w+): /, '\1"\2": ').gsub(/:(\w+)=>/, '"\1":').gsub('=>', ':').gsub('\"', '"')
           )
           yield(parsed) if block_given?
           parsed

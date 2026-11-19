@@ -3,7 +3,7 @@ app_path = "/srv/ontoportal/#{application}"
 current_version_path = "#{app_path}/current"
 pid_file_path = 'tmp/pids/unicorn.pid'
 
-if Dir.exists?(current_version_path)
+if Dir.exist?(current_version_path)
   app_socket_path = app_path + '/shared/tmp/sockets/unicorn.sock'
   app_gemfile_path = "#{current_version_path}/Gemfile"
   user = 'ontoportal'
@@ -60,7 +60,7 @@ before_fork do |server, worker|
 
   old_pid = "#{server.config[:pid]}.oldbin"
 
-  if File.exists?(old_pid) && server.pid != old_pid
+  if File.exist?(old_pid) && server.pid != old_pid
     begin
       sig = (worker.nr + 1) >= server.worker_processes ? :QUIT : :TTOU
       Process.kill(sig, File.read(old_pid).to_i)
