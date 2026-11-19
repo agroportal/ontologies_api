@@ -187,6 +187,24 @@ class OntologiesController < ApplicationController
     end
 
     ##
+    # Modelling pitfalls report computed once by the submission pipeline
+    get '/:acronym/oops' do
+      ont = Ontology.find(params["acronym"]).include(Ontology.goo_attrs_to_load).first
+      error 404, "Ontology #{params['acronym']} not found" if ont.nil?
+      ont.bring(:viewingRestriction) if ont.bring?(:viewingRestriction)
+      check_access(ont)
+
+      sub = ont.latest_submission(status: :pitfalls_oops)
+      error 404, "No pitfall report available for ontology #{params['acronym']}" if sub.nil?
+
+      report_path = sub.oops_report_path
+      error 404, "Pitfall report not found for ontology #{params['acronym']}" unless File.file?(report_path)
+
+      content_type 'application/json'
+      send_file report_path, disposition: 'inline'
+    end
+
+    ##
     # WebVOWL visualisation. The shared front-end and the per ontology data
     # must answer under the same prefix: the bundled viewer only loads a static
     # graph through its preset mode, which fetches "./data/ontology.json"

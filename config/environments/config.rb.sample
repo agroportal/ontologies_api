@@ -23,6 +23,7 @@ SOLR_PROP_SEARCH_URL  = ENV.include?("SOLR_PROP_SEARCH_URL")  ? ENV["SOLR_PROP_S
 SOLR_TERM_SEARCH_URL  = ENV.include?("SOLR_TERM_SEARCH_URL")  ? ENV["SOLR_TERM_SEARCH_URL"]  : "http://localhost:8983/solr"
 
 $SENTRY_DSN = ENV.include?("SENTRY_DSN") ? ENV["SENTRY_DSN"] : nil
+$SENTRY_TRACES_SAMPLE_RATE = ENV["SENTRY_TRACES_SAMPLE_RATE"]&.to_f
 begin
   # For prefLabel extract main_lang first, or anything if no main found.
   # For other properties only properties with a lang that is included in main_lang are used

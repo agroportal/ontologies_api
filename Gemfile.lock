@@ -1,25 +1,29 @@
 GIT
   remote: https://github.com/agroportal/goo.git
-  revision: eafaa40847d3537d3ff07de067397f87382bf662
+  revision: 8e25ea9dc014cd9530d25366b0ad1901108d1f13
   branch: master
   specs:
     goo (0.0.2)
+      activesupport
       addressable (~> 2.8)
+      benchmark
       pry
       rdf
       rdf-raptor
       rdf-rdfxml
       rdf-vocab
       redis
+      request_store
       rest-client
-      rsolr
-      sparql-client
+      rsolr (>= 2.6.0)
+      sparql-client (= 3.2.2)
+      stoplight (~> 5.0)
       uuid
 
 GIT
   remote: https://github.com/agroportal/ncbo_annotator.git
-  revision: aeb0222400f1b423cb865545c41233d2cbd82bfc
-  branch: development
+  revision: 64d68acfd71e4fccb3958f9256c8d8525029929f
+  branch: master
   specs:
     ncbo_annotator (0.0.1)
       goo
@@ -29,7 +33,7 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ncbo_cron.git
-  revision: d3da6888c0efb62e4b1e790e478f9e00b73acaae
+  revision: c7a2ebdbb4a78eb63b72f0a85053f1305835da8f
   branch: master
   specs:
     ncbo_cron (0.0.1)
@@ -46,8 +50,8 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ncbo_ontology_recommender.git
-  revision: a0e36c89e6e2f8502cac288df2992625649dad7a
-  branch: development
+  revision: a547135098d2ef00c5ef257a46c6f8cf0b82608d
+  branch: master
   specs:
     ncbo_ontology_recommender (0.0.1)
       goo
@@ -57,12 +61,13 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ontologies_linked_data.git
-  revision: 2f2faacf924148252628bf149fda07316640ed1c
+  revision: f99c8743a1eb937f0b8e5210c024311363726506
   branch: master
   specs:
     ontologies_linked_data (0.0.1)
       activesupport
       bcrypt
+      csv
       goo
       json
       libxml-ruby
@@ -75,16 +80,15 @@ GIT
       rdf-rdfxml
       roo
       rsolr
-      rubyzip (= 1.3.0)
+      rubyzip (~> 3.0)
 
 GIT
-  remote: https://github.com/agroportal/sparql-client.git
-  revision: 736b7650e28db3ce5e3e49511ac30f958a29e8f1
-  branch: development
+  remote: https://github.com/agroportal/ontoportal_testkit.git
+  revision: 3f670c9b3072a3550ce706bc9283bf09a3cd9c45
+  branch: main
   specs:
-    sparql-client (3.2.2)
-      net-http-persistent (~> 4.0, >= 4.0.2)
-      rdf (~> 3.2, >= 3.2.11)
+    ontoportal_testkit (0.1.0)
+      rake (>= 13.0)
 
 GIT
   remote: https://github.com/palexander/rack-post-body-to-params.git
@@ -130,18 +134,19 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.2.3.1)
+    activesupport (8.1.4.1)
       base64
-      benchmark (>= 0.3)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.3.1)
       connection_pool (>= 2.2.5)
       drb
       i18n (>= 1.6, < 2)
+      json
       logger (>= 1.4.2)
-      minitest (>= 5.1, < 6)
+      minitest (>= 5.1)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
+      uri (>= 0.13.1)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
     airbrussh (1.6.1)
@@ -174,6 +179,7 @@ GEM
     connection_pool (2.5.5)
     crack (0.4.5)
       rexml
+    csv (3.3.7)
     dante (0.2.0)
     date (3.5.1)
     declarative (0.0.20)
@@ -349,6 +355,12 @@ GEM
     nokogiri (1.18.10)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    nokogiri (1.18.10-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.10-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.10-x86_64-linux-gnu)
+      racc (~> 1.4)
     oj (3.17.0)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
@@ -435,9 +447,12 @@ GEM
       netrc (~> 0.8)
     retriable (3.4.1)
     rexml (3.4.4)
-    roo (2.10.1)
+    roo (4.0.0)
+      base64 (~> 0.2)
+      csv (~> 3)
+      logger (~> 1)
       nokogiri (~> 1)
-      rubyzip (>= 1.3.0, < 3.0.0)
+      rubyzip (>= 3.0.0, < 4.0.0)
     rsolr (2.6.0)
       builder (>= 2.1.2)
       faraday (>= 0.9, < 3, != 2.0.0)
@@ -457,7 +472,7 @@ GEM
       prism (~> 1.7)
     ruby-progressbar (1.13.0)
     ruby-xxHash (0.4.0.2)
-    rubyzip (1.3.0)
+    rubyzip (3.7.0)
     rufus-scheduler (3.9.2)
       fugit (~> 1.1, >= 1.11.1)
     securerandom (0.4.1)
@@ -485,6 +500,9 @@ GEM
       rack-protection (= 4.2.1)
       rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
+    sparql-client (3.2.2)
+      net-http-persistent (~> 4.0, >= 4.0.2)
+      rdf (~> 3.2, >= 3.2.11)
     sshkit (1.25.0)
       base64
       logger
@@ -492,6 +510,9 @@ GEM
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
       ostruct
+    stoplight (5.8.3)
+      concurrent-ruby
+      zeitwerk
     systemu (2.6.5)
     temple (0.10.4)
     tilt (2.7.0)
@@ -519,6 +540,7 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.9.2)
+    zeitwerk (2.8.3)
 
 PLATFORMS
   arm64-darwin
@@ -535,6 +557,7 @@ DEPENDENCIES
   capistrano-locally
   capistrano-rbenv
   crack (= 0.4.5)
+  csv
   ed25519 (>= 1.2, < 2.0)
   ffi (= 1.15.0)
   goo!
@@ -555,6 +578,7 @@ DEPENDENCIES
   net-ftp
   oj
   ontologies_linked_data!
+  ontoportal_testkit!
   pandoc-ruby
   parallel
   parseconfig
@@ -583,11 +607,10 @@ DEPENDENCIES
   simplecov-cobertura
   sinatra
   sinatra-contrib!
-  sparql-client!
   unicorn
   unicorn-worker-killer
   webmock
   webrick
 
 BUNDLED WITH
-   2.6.7
+  4.0.7
