@@ -254,6 +254,25 @@ class OntologySubmissionsController < ApplicationController
       end
     end
 
+    ##
+    # Modelling pitfalls report of a submission, computed by the submission pipeline
+    get '/:ontology_submission_id/oops' do
+      acronym = params["acronym"]
+      ont = Ontology.find(acronym).include(Ontology.goo_attrs_to_load).first
+      error 404, "Ontology #{acronym} not found" if ont.nil?
+      ont.bring(:viewingRestriction) if ont.bring?(:viewingRestriction)
+      check_access(ont)
+
+      submission = ont.submission(params['ontology_submission_id'].to_i)
+      error 404, "Submission #{params['ontology_submission_id']} not found for ontology #{acronym}" if submission.nil?
+
+      report_path = submission.oops_report_path
+      error 404, "No pitfall report available for submission #{submission.submissionId} of ontology #{acronym}" unless File.file?(report_path)
+
+      content_type 'application/json'
+      send_file report_path, disposition: 'inline'
+    end
+
     def delete_submissions(startId, endId)
       startId.upto(endId + 1) do |i|
         sub = LinkedData::Models::OntologySubmission.find(RDF::URI.new("http://data.bioontology.org/ontologies/MS/submissions/#{i}")).first
