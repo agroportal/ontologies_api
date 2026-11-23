@@ -61,7 +61,7 @@ GIT
 
 GIT
   remote: https://github.com/agroportal/ontologies_linked_data.git
-  revision: f99c8743a1eb937f0b8e5210c024311363726506
+  revision: d85724cfe944ff8d9ca8298124493af9a84be24f
   branch: master
   specs:
     ontologies_linked_data (0.0.1)
