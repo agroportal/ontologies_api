@@ -269,8 +269,7 @@ class OntologySubmissionsController < ApplicationController
       report_path = submission.oops_report_path
       error 404, "No pitfall report available for submission #{submission.submissionId} of ontology #{acronym}" unless File.file?(report_path)
 
-      content_type 'application/json'
-      send_file report_path, disposition: 'inline'
+      reply MultiJson.load(File.read(report_path))
     end
 
     def delete_submissions(startId, endId)
