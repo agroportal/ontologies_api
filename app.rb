@@ -113,13 +113,6 @@ if $SENTRY_DSN
   use Sentry::Rack::CaptureExceptions
 end
 
-use Rack::Static,
-    urls: ['/webvowl'],
-    root: 'public',
-    header_rules: [[:all, { 'Cache-Control' => 'no-cache',
-                            'Origin-Agent-Cluster' => '?1',
-                            'Content-Security-Policy' => "frame-ancestors 'self' #{LinkedData.settings.ui_host}" }]]
-
 use Rack::Cors do
   allow do
     origins '*'
