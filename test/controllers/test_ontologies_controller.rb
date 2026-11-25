@@ -263,6 +263,54 @@ class TestOntologiesController < TestCase
     end
   end
 
+  def test_vowl_data
+    ont = create_ontologies_and_submissions(ont_count: 1, submission_count: 1, process_submission: false)[2].first
+    ont.bring_remaining
+    acronym = ont.acronym
+
+    get "/ontologies/#{acronym}/vowl"
+    assert_equal(404, last_response.status, msg="Graph data served without the VOWL status")
+
+    add_vowl_data(ont, '{"class":[]}')
+    get "/ontologies/#{acronym}/vowl"
+    assert_equal(200, last_response.status, msg=get_errors(last_response))
+    assert_equal("application/json", last_response.content_type)
+    assert_equal('{"class":[]}', last_response.body)
+
+    get "/ontologies/NOT_AN_ONTOLOGY/vowl"
+    assert_equal(404, last_response.status)
+  end
+
+  def test_vowl_data_acl_only
+    ont = create_ontologies_and_submissions(ont_count: 1, submission_count: 1, process_submission: false)[2].first
+    ont.bring_remaining
+    add_vowl_data(ont, '{"class":[]}')
+
+    begin
+      allowed_user = User.new(username: "allowed", email: "test1@example.org", password: "12345")
+      allowed_user.save
+      blocked_user = User.new(username: "blocked", email: "test2@example.org", password: "12345")
+      blocked_user.save
+
+      ont.acl = [allowed_user]
+      ont.viewingRestriction = "private"
+      ont.save
+
+      with_settings(enable_security: true) do
+        get "/ontologies/#{ont.acronym}/vowl?apikey=#{allowed_user.apikey}"
+        assert_equal(200, last_response.status, msg="User who is in ACL couldn't read the graph data")
+
+        get "/ontologies/#{ont.acronym}/vowl?apikey=#{blocked_user.apikey}"
+        assert_equal(403, last_response.status, msg="User who isn't in ACL could read the graph data")
+      end
+    ensure
+      del = User.find("allowed").first
+      del.delete if del
+      del = User.find("blocked").first
+      del.delete if del
+    end
+  end
+
   def test_on_demand_ontology_pull
     ont = create_ontologies_and_submissions(ont_count: 1, submission_count: 1, process_submission: true)[2].first
     ont.bring_remaining
@@ -396,6 +444,15 @@ class TestOntologiesController < TestCase
   end
 
   private
+
+  def add_vowl_data(ont, json)
+    sub = ont.latest_submission(status: :any)
+    sub.bring_remaining
+    FileUtils.mkdir_p(File.dirname(sub.vowl_json_path))
+    File.write(sub.vowl_json_path, json)
+    sub.add_submission_status(LinkedData::Models::SubmissionStatus.find("VOWL").first)
+    sub.save
+  end
 
   def start_server
     ont_path = File.expand_path("../../data/ontology_files/BRO_v3.2.owl", __FILE__)
