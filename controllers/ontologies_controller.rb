@@ -182,8 +182,7 @@ class OntologiesController < ApplicationController
       report_path = sub.foops_report_path
       error 404, "FAIRness report not found for ontology #{params['acronym']}" unless File.file?(report_path)
 
-      content_type 'application/json'
-      send_file report_path, disposition: 'inline'
+      reply MultiJson.load(File.read(report_path))
     end
 
     ##
@@ -200,8 +199,7 @@ class OntologiesController < ApplicationController
       report_path = sub.oops_report_path
       error 404, "Pitfall report not found for ontology #{params['acronym']}" unless File.file?(report_path)
 
-      content_type 'application/json'
-      send_file report_path, disposition: 'inline'
+      reply MultiJson.load(File.read(report_path))
     end
 
     ##

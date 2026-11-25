@@ -392,24 +392,29 @@ module Sinatra
         latest_submissions
       end
 
+      # Submission attributes the per-ontology endpoints use, beyond the submissionId and
+      # submissionStatus that Ontology#submission always loads. The submission's ontology is
+      # the ontology loaded here, so it isn't listed.
+      SUBMISSION_ATTRS = [submissionStatus: [:code], metrics: :classes].freeze
+
       def get_ontology_and_submission(ontology_acronym: nil)
         acronym = ontology_acronym || @params["ontology"]
+        # Don't preload the ontology's submissions: ontologies with hundreds of them make that
+        # query large and slow. Ontology#submission and #latest_submission load just one.
         ont = Ontology.find(acronym)
                       .include(:acronym, :administeredBy, :acl, :viewingRestriction)
-                      .include(submissions:
-                                 [:submissionId, submissionStatus: [:code], ontology: [:acronym], metrics: :classes])
                       .first
         error(404, "Ontology (artefact) '#{acronym}' not found.") if ont.nil?
         check_access(ont) if LinkedData.settings.enable_security # Security check
         submission = nil
         if @params.include? "ontology_submission_id"
-          submission = ont.submission(@params[:ontology_submission_id])
+          submission = ont.submission(@params[:ontology_submission_id], include: SUBMISSION_ATTRS)
           if submission.nil?
             error 404,
                   "You must provide an existing submission (distribution) ID for the #{acronym} ontology (artefact)"
           end
         else
-          submission = ont.latest_submission(status: [:RDF])
+          submission = ont.latest_submission(status: :rdf, include: SUBMISSION_ATTRS)
         end
         error 404, "Ontology (artefact) #{acronym} submission (distribution) not found." if submission.nil?
         if !submission.ready?(status: [:RDF])

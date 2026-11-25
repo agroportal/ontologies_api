@@ -28,6 +28,7 @@ require_relative 'lib/rack/slow_requests'
 require_relative 'lib/rack/param_translator'
 require_relative 'lib/rack/slice_detection'
 require_relative 'lib/rack/request_lang'
+require_relative 'lib/rack/api_user_header'
 
 # Logging setup
 require_relative 'config/logging'
@@ -139,6 +140,8 @@ use Rack::ParamTranslator
 use RequestStore::Middleware
 use Rack::RequestLang
 
+# Outside Authorization (sets REMOTE_USER) and Rack::Cache: reports the user to nginx
+use Rack::ApiUserHeader
 use LinkedData::Security::Authorization
 use LinkedData::Security::AccessDenied
 

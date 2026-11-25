@@ -1,37 +1,4 @@
 GIT
-  remote: https://github.com/agroportal/goo.git
-  revision: 8e25ea9dc014cd9530d25366b0ad1901108d1f13
-  branch: master
-  specs:
-    goo (0.0.2)
-      activesupport
-      addressable (~> 2.8)
-      benchmark
-      pry
-      rdf
-      rdf-raptor
-      rdf-rdfxml
-      rdf-vocab
-      redis
-      request_store
-      rest-client
-      rsolr (>= 2.6.0)
-      sparql-client (= 3.2.2)
-      stoplight (~> 5.0)
-      uuid
-
-GIT
-  remote: https://github.com/agroportal/ncbo_annotator.git
-  revision: 64d68acfd71e4fccb3958f9256c8d8525029929f
-  branch: master
-  specs:
-    ncbo_annotator (0.0.1)
-      goo
-      ontologies_linked_data
-      redis
-      ruby-xxHash
-
-GIT
   remote: https://github.com/agroportal/ncbo_cron.git
   revision: c7a2ebdbb4a78eb63b72f0a85053f1305835da8f
   branch: master
@@ -49,19 +16,8 @@ GIT
       rufus-scheduler
 
 GIT
-  remote: https://github.com/agroportal/ncbo_ontology_recommender.git
-  revision: a547135098d2ef00c5ef257a46c6f8cf0b82608d
-  branch: master
-  specs:
-    ncbo_ontology_recommender (0.0.1)
-      goo
-      ncbo_annotator
-      ontologies_linked_data
-      redis
-
-GIT
   remote: https://github.com/agroportal/ontologies_linked_data.git
-  revision: f99c8743a1eb937f0b8e5210c024311363726506
+  revision: d85724cfe944ff8d9ca8298124493af9a84be24f
   branch: master
   specs:
     ontologies_linked_data (0.0.1)
@@ -83,7 +39,51 @@ GIT
       rubyzip (~> 3.0)
 
 GIT
-  remote: https://github.com/agroportal/ontoportal_testkit.git
+  remote: https://github.com/ontoportal/goo.git
+  revision: 8e25ea9dc014cd9530d25366b0ad1901108d1f13
+  branch: master
+  specs:
+    goo (0.0.2)
+      activesupport
+      addressable (~> 2.8)
+      benchmark
+      pry
+      rdf
+      rdf-raptor
+      rdf-rdfxml
+      rdf-vocab
+      redis
+      request_store
+      rest-client
+      rsolr (>= 2.6.0)
+      sparql-client (= 3.2.2)
+      stoplight (~> 5.0)
+      uuid
+
+GIT
+  remote: https://github.com/ontoportal/ncbo_annotator.git
+  revision: 64d68acfd71e4fccb3958f9256c8d8525029929f
+  branch: master
+  specs:
+    ncbo_annotator (0.0.1)
+      goo
+      ontologies_linked_data
+      redis
+      ruby-xxHash
+
+GIT
+  remote: https://github.com/ontoportal/ncbo_ontology_recommender.git
+  revision: a547135098d2ef00c5ef257a46c6f8cf0b82608d
+  branch: master
+  specs:
+    ncbo_ontology_recommender (0.0.1)
+      goo
+      ncbo_annotator
+      ontologies_linked_data
+      redis
+
+GIT
+  remote: https://github.com/ontoportal/ontoportal_testkit.git
   revision: 3f670c9b3072a3550ce706bc9283bf09a3cd9c45
   branch: main
   specs:

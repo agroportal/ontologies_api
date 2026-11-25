@@ -22,6 +22,11 @@ Sinatra.register do
         app.public_send(http_verb, "#{pattern}/") do
           pass unless request.path_info.end_with?('/')
           redirect_path = request.path_info.chomp('/')
+
+          # Keep the query string, else "/x/?apikey=K" lands on "/x" without its apikey
+          query = request.query_string
+          redirect_path = "#{redirect_path}?#{query}" unless query.empty?
+
           redirect redirect_path, 301
         end
       end
