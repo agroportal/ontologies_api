@@ -202,6 +202,24 @@ class OntologiesController < ApplicationController
       reply MultiJson.load(File.read(report_path))
     end
 
+    ##
+    # WebVOWL graph data computed once by the submission pipeline
+    get '/:acronym/vowl' do
+      ont = Ontology.find(params["acronym"]).include(Ontology.goo_attrs_to_load).first
+      error 404, "Ontology #{params['acronym']} not found" if ont.nil?
+      ont.bring(:viewingRestriction) if ont.bring?(:viewingRestriction)
+      check_access(ont)
+
+      sub = ont.latest_submission(status: :vowl)
+      error 404, "No visualisation available for ontology #{params['acronym']}" if sub.nil?
+
+      json_path = sub.vowl_json_path
+      error 404, "Visualisation not found for ontology #{params['acronym']}" unless File.file?(json_path)
+
+      content_type 'application/json'
+      send_file json_path, disposition: 'inline'
+    end
+
     private
 
     def create_ontology
